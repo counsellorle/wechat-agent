@@ -1,0 +1,49 @@
+================================================================
+  项目搭建记录
+  时间：2026年5月11日
+  项目路径：F:\Ai\wechat-agent
+================================================================
+
+一、环境搭建
+────────────────────────────────────────
+  1. 安装 Python 3.11.9（C:\Program Files\Python311）
+  2. 创建虚拟环境 F:\Ai\wechat-agent\venv
+  3. 安装依赖：
+     · PyTorch 2.6.0+cu124（CUDA 12.4）
+     · Transformers 4.57.6
+     · PEFT 0.13.2
+     · bitsandbytes 0.49.2
+     · ChromaDB 1.5.9
+     · sentence-transformers 5.4.1
+     · Gradio 6.14.0
+     · Accelerate 1.13.0
+     · Datasets 4.8.5
+  4. GPU：NVIDIA GeForce RTX 3050 Laptop GPU（4GB，CUDA 13.0）
+  5. CUDA 可用：是
+
+二、模型下载
+────────────────────────────────────────
+  · Qwen2.5-1.5B-Instruct（3.09GB）
+  · 下载源：hf-mirror.com（国内镜像）
+  · 位置：F:\Ai\wechat-agent\models\base\
+  · 加载方式：本地离线加载
+
+三、源代码文件（共 10 个）
+────────────────────────────────────────
+  · config.py          — 全局配置（含离线模式）
+  · src\memory.py      — SQLite 对话存储
+  · src\rag.py         — ChromaDB 向量检索
+  · src\persona.py     — 人格 Prompt 管理
+  · src\01_export.py   — 数据导出说明
+  · src\02_clean.py    — 数据清洗
+  · src\03_build_rag.py— 构建 RAG 索引
+  · src\04_build_dataset.py — 构建训练数据集
+  · src\05_train.py    — LoRA 微调训练
+  · src\06_chat.py     — 对话主程序（Gradio）
+  · src\07_retrain.py  — 增量重训
+
+四、备注
+────────────────────────────────────────
+  · 全部本地运行，零云端依赖
+  · 使用国内镜像 hf-mirror.com 下载模型
+  · 离线模式已启用（无需联网）

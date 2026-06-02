@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+venv/
+.venv/
+
+# Data
+data/
+db/
+
+# Models (too large for git)
+models/
+
+# Config (may contain sensitive info)
+config.py
+
+# OS
+Thumbs.db
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Chat records (privacy)
+聊天记录/
+
+# ExportWeChat tool
+ExportWeChat/
+
+# Executables
+*.exe
+*.dll
+*.so

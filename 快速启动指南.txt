@@ -1,0 +1,117 @@
+================================================================
+  微信聊天记录智能体 — 快速启动指南
+  项目路径：F:\Ai\wechat-agent
+================================================================
+
+一、首次使用流程
+────────────────────────────────────────
+
+第 1 步：激活虚拟环境
+  打开终端（Win+R → cmd），执行：
+    F:\Ai\wechat-agent\venv\Scripts\activate
+
+  终端前面出现 (venv) 即成功。
+
+第 2 步：导出微信聊天记录为 JSON（三选一）
+
+  【方式一】PyWxDump（推荐，一键导出）
+    在 venv 激活状态下执行：
+      pip install pywxdump
+      pywxdump
+    按提示操作，选择要导出的聊天对象，自动输出 JSON。
+    将导出的 JSON 文件放入 data\raw\
+
+  【方式二】WeChatMsg 工具
+    下载 WeChatMsg（开源，GitHub 可搜），
+    连接微信后导出聊天记录为 JSON，放入 data\raw\
+
+  【方式三】手动构建
+    按以下格式手动创建 JSON 文件放入 data\raw\：
+    [
+      {"content": "在吗？", "sender": "好友昵称", "type": "text", "timestamp": 1700000000},
+      {"content": "在的",  "sender": "我",         "type": "text", "timestamp": 1700000010}
+    ]
+    参考文件：data\raw\sample_format.json（已自动生成）
+
+第 3 步：清洗数据
+    python src\02_clean.py
+  输入你的微信昵称，程序会自动处理。
+
+第 4 步：构建训练数据集
+    python src\04_build_dataset.py
+
+第 5 步：LoRA 微调训练（约 30 分钟）
+    python src\05_train.py
+
+第 6 步：构建 RAG 向量索引
+    python src\03_build_rag.py
+
+第 7 步：启动对话界面
+    python src\06_chat.py
+
+  浏览器自动打开 http://localhost:7860
+
+
+二、日常对话（已有训练好的模型）
+────────────────────────────────────────
+
+  每次启动：
+    F:\Ai\wechat-agent\venv\Scripts\activate
+    python src\06_chat.py
+
+  浏览器打开 http://localhost:7860
+
+
+三、增量重训（积累 50 条新对话后）
+────────────────────────────────────────
+
+    python src\07_retrain.py
+
+
+四、项目结构
+────────────────────────────────────────
+
+  F:\Ai\wechat-agent\
+  ├── config.py              ← 全局配置（可修改端口、训练参数等）
+  ├── data\
+  │   ├── raw\               ← 放入微信聊天记录 JSON
+  │   ├── processed\         ← 清洗后的数据
+  │   └── train\             ← 训练数据集
+  ├── db\
+  │   ├── chat_history.db    ← 对话历史（自动创建）
+  │   └── vectordb\          ← 向量索引（自动创建）
+  ├── models\
+  │   ├── base\              ← Qwen2.5-1.5B 模型（已下载）
+  │   └── lora\              ← LoRA 权重（训练后生成）
+  ├── src\                   ← 源代码
+  │   ├── memory.py          ← 对话存储
+  │   ├── rag.py             ← 向量检索
+  │   ├── persona.py         ← 人格管理
+  │   ├── 01_export.py       ← 数据导出说明
+  │   ├── 02_clean.py        ← 数据清洗
+  │   ├── 03_build_rag.py    ← 构建索引
+  │   ├── 04_build_dataset.py← 构建训练集
+  │   ├── 05_train.py        ← LoRA 训练
+  │   ├── 06_chat.py         ← 对话主程序
+  │   └── 07_retrain.py      ← 增量重训
+  └── venv\                  ← 虚拟环境
+
+
+五、常用命令速查
+────────────────────────────────────────
+
+  激活环境：  F:\Ai\wechat-agent\venv\Scripts\activate
+  退出环境：  deactivate
+  启动聊天：  python src\06_chat.py
+  增量重训：  python src\07_retrain.py
+  查看GPU：   python -c "import torch; print(torch.cuda.is_available())"
+
+
+六、注意事项
+────────────────────────────────────────
+
+  · 全部本地运行，不需要联网
+  · 对话记录自动保存在 chat_history.db，永不丢失
+  · 模型文件约 3GB，占用 F 盘空间
+  · 如需清空对话记忆，删除 db\chat_history.db 即可
+  · 修改 config.py 中的 GRADIO_PORT 可更改端口号
